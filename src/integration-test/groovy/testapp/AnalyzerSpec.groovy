@@ -1,5 +1,6 @@
 package testapp
 
+import grails.plugins.elasticsearch.ElasticSearchResult
 import grails.testing.mixin.integration.Integration
 import grails.transaction.Rollback
 import org.elasticsearch.index.query.QueryBuilders
@@ -12,7 +13,7 @@ import testapp.all.Post
 
 @Integration
 @Rollback
-class AnalyzerIntegrationSpec extends Specification implements ElasticSearchSpec {
+class AnalyzerSpec extends Specification implements ElasticSearchSpec {
 
     def setup() {
         save new Post(
@@ -71,7 +72,7 @@ class AnalyzerIntegrationSpec extends Specification implements ElasticSearchSpec
         search(Post, QueryBuilders.matchQuery('body', 'xyz')).total == 1
 
         when:
-        def results = Post.search {
+        ElasticSearchResult results = Post.search {
             match(body: 'xyz')
         }
 
