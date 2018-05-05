@@ -1,4 +1,4 @@
-package esdemo
+package testapp
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration

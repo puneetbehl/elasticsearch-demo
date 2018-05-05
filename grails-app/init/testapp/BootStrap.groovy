@@ -1,4 +1,4 @@
-package esdemo
+package testapp
 
 class BootStrap {
 

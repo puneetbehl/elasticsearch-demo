@@ -2,7 +2,7 @@
 grails:
     profile: rest-api
     codegen:
-        defaultPackage: esdemo
+        defaultPackage: testapp
     gorm:
         reactor:
             # Whether to translate GORM events into Reactor events

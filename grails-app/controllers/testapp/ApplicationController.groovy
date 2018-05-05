@@ -1,4 +1,4 @@
-package esdemo
+package testapp
 
 import grails.core.GrailsApplication
 import grails.plugins.*
