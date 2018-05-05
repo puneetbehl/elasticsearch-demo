@@ -108,10 +108,32 @@ environments:
                 defaultTransactionIsolation: 2 # TRANSACTION_READ_COMMITTED
 ---
 elasticSearch:
-    datastoreImpl: hibernateDatastore
     client:
         mode: local
+        transport.sniff: false
         hosts:
-          - {host: localhost, port: 9300}
-#          - {host: 192.168.99.100, port: 9300}
-    cluster.name: elasticserach
+            - {host: localhost, port: 9300}
+    datastoreImpl: hibernateDatastore
+    date.formats: ["yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"]
+    defaultExcludedProperties: ['password']
+    disableAutoIndex: false
+    unmarshallComponents: true
+    searchableProperty.name: searchable
+    includeTransients: false
+    index:
+        store.type: simplefs
+        compound_format: true
+        settings:
+            analysis:
+                filter:
+                    replace_synonyms:
+                        type: synonym
+                        synonyms: ['abc => xyz']
+                analyzer:
+                    test_analyzer:
+                        tokenizer: standard
+                        filter: ['lowercase']
+                    repl_analyzer:
+                        tokenizer: standard
+                        filter: ['lowercase', 'replace_synonyms']
+---
