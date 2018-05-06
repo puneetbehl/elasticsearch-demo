@@ -1,6 +1,7 @@
 package testapp.json
 
 import org.grails.web.json.JSONObject
+import testapp.custom.types.JsonUserType
 
 class Product {
     String productName
@@ -23,5 +24,6 @@ class Product {
 
     static mapping = {
         autoImport(false)
+        json type: JsonUserType
     }
 }
