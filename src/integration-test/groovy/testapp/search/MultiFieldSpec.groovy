@@ -30,4 +30,26 @@ class MultiFieldSpec extends Specification implements ElasticSearchSpec {
         ship.captain.lastName == 'Esteban'
     }
 
+    void 'Multi fields creates creates child field'() {
+        given:
+        Person mal = save new Person(firstName: 'Jason', lastName: 'Lambert')
+        Spaceship spaceship = save new Spaceship(name: 'Intrepid', captain: mal)
+
+        index(spaceship)
+        refreshIndices()
+
+        when:
+        ElasticSearchResult results = search(Spaceship) {
+            bool { must { term("captain.firstName.raw": 'Jason') } }
+        }
+
+        then:
+        results.total == 1
+
+        Spaceship resultSpaceship = results.searchResults.first() as Spaceship
+        resultSpaceship.name == 'Intrepid'
+        resultSpaceship.captain.firstName == 'Jason'
+        resultSpaceship.captain.lastName == 'Lambert'
+    }
+
 }
