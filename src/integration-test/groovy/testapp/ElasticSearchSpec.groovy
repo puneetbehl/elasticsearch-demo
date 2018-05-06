@@ -1,19 +1,10 @@
 package testapp
 
 import grails.core.GrailsApplication
-import grails.plugins.elasticsearch.ElasticSearchAdminService
-import grails.plugins.elasticsearch.ElasticSearchHelper
-import grails.plugins.elasticsearch.ElasticSearchResult
-import grails.plugins.elasticsearch.ElasticSearchService
-import grails.util.GrailsNameUtils
-import org.grails.datastore.gorm.GormEntity
+import grails.plugins.elasticsearch.*
 import grails.plugins.elasticsearch.mapping.DomainEntity
 import grails.plugins.elasticsearch.mapping.SearchableClassMappingConfigurator
-
-import org.springframework.beans.factory.annotation.Autowired
-
-import org.hibernate.SessionFactory
-
+import grails.util.GrailsNameUtils
 import org.elasticsearch.action.admin.cluster.state.ClusterStateRequestBuilder
 import org.elasticsearch.action.search.SearchRequest
 import org.elasticsearch.client.AdminClient
@@ -22,7 +13,9 @@ import org.elasticsearch.cluster.ClusterState
 import org.elasticsearch.cluster.metadata.IndexMetaData
 import org.elasticsearch.cluster.metadata.MappingMetaData
 import org.elasticsearch.index.query.QueryBuilder
-
+import org.grails.datastore.gorm.GormEntity
+import org.hibernate.SessionFactory
+import org.springframework.beans.factory.annotation.Autowired
 
 trait ElasticSearchSpec {
 
@@ -43,6 +36,9 @@ trait ElasticSearchSpec {
 
     @Autowired
     SearchableClassMappingConfigurator searchableClassMappingConfigurator
+
+    @Autowired
+    ElasticSearchBootStrapHelper elasticSearchBootStrapHelper
 
     void resetElasticsearch() {
         deleteIndices()
@@ -66,7 +62,7 @@ trait ElasticSearchSpec {
     }
 
     ElasticSearchResult search(SearchRequest request, Map params) {
-        elasticSearchService.search(request, params)
+        elasticSearchService.search(request, params) as ElasticSearchResult
     }
 
     ElasticSearchResult search(Class<?> clazz, QueryBuilder queryBuilder) {
