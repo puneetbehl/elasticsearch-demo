@@ -26,4 +26,32 @@ class IndexingSpec extends Specification implements ElasticSearchSpec {
         and:
         search(Product, 'myTestProduct').total == 0
     }
+
+    void 'Indexing the same object multiple times updates the corresponding ES entry'() {
+        given:
+        def product = save new Product(productName: 'myTestProduct')
+
+        when:
+        index(product)
+        refreshIndices()
+
+        then:
+        search(Product, 'myTestProduct').total == 1
+
+        when:
+        product.productName = 'newProductName'
+        save product
+
+        index(product)
+        refreshIndices()
+
+        then:
+        search(Product, 'myTestProduct').total == 0
+
+        and:
+        def result = search(Product, product.productName)
+        result.total == 1
+        List<Product> searchResults = result.searchResults
+        searchResults[0].productName == product.productName
+    }
 }
