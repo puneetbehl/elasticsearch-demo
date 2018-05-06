@@ -11,6 +11,11 @@ import org.elasticsearch.cluster.metadata.IndexMetaData
 import org.elasticsearch.cluster.metadata.MappingMetaData
 import org.springframework.beans.factory.annotation.Autowired
 
+/**
+ * @author Puneet Behl
+ * @since 1.0
+ */
+
 trait ElasticsearchAdminSpec {
 
     @Autowired

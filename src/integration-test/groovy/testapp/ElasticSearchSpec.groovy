@@ -10,7 +10,12 @@ import org.grails.datastore.gorm.GormEntity
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 
-trait ElasticSearchSpec implements ElasticsearchAdminSpec, ElasticSearchMappingSpec{
+/**
+ * @author Puneet Behl
+ * @since 1.0
+ */
+
+trait ElasticSearchSpec implements ElasticsearchAdminSpec, ElasticSearchMappingSpec {
 
     @Autowired
     GrailsApplication grailsApplication
