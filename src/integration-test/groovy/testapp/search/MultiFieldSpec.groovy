@@ -6,7 +6,7 @@ import testapp.ElasticSearchSpec
 import testapp.component.Spaceship
 import testapp.multifield.Person
 
-class MultiFieldUntouchedSpec extends Specification implements ElasticSearchSpec {
+class MultiFieldSpec extends Specification implements ElasticSearchSpec {
 
     void 'Multi_filed creates untouched field'() {
         given:
