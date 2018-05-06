@@ -1,10 +1,11 @@
-package testapp
+package testapp.marshalling
 
 import grails.plugins.elasticsearch.ElasticSearchResult
 import grails.testing.mixin.integration.Integration
 import grails.transaction.Rollback
 import org.grails.web.json.JSONObject
 import spock.lang.Specification
+import testapp.ElasticSearchSpec
 import testapp.json.Product
 
 /**
