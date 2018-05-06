@@ -1,10 +1,19 @@
 package testapp.marshalling
 
+import grails.testing.mixin.integration.Integration
+import grails.transaction.Rollback
 import spock.lang.Specification
 import testapp.ElasticSearchSpec
 import testapp.geopoint.Building
 import testapp.geopoint.GeoPoint
 
+/**
+ * @author Puneet Behl
+ * @since 1.0
+ */
+
+@Integration
+@Rollback
 class AliasMarshallingSpec extends Specification implements ElasticSearchSpec {
 
     void 'should marshal the alias field and un-marshal correctly (ignore alias)'() {
