@@ -5,7 +5,7 @@ import grails.testing.mixin.integration.Integration
 import grails.transaction.Rollback
 import org.elasticsearch.action.get.GetRequest
 import spock.lang.Specification
-import testapp.component.Spaceship
+import testapp.innercomponent.Spaceship
 import testapp.multifield.Person
 
 /**

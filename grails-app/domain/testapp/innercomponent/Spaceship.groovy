@@ -1,4 +1,4 @@
-package testapp.component
+package testapp.innercomponent
 
 import testapp.multifield.Person
 

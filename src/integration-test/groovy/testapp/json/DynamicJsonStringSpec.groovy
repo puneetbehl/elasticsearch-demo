@@ -7,7 +7,7 @@ import grails.transaction.Rollback
 import org.grails.web.json.JSONElement
 import spock.lang.Specification
 import testapp.ElasticSearchSpec
-import testapp.component.Spaceship
+import testapp.innercomponent.Spaceship
 import testapp.multifield.Person
 
 /**

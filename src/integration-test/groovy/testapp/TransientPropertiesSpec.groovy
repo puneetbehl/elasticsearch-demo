@@ -83,17 +83,17 @@ class TransientPropertiesSpec extends Specification implements ElasticSearchSpec
 
     void 'when transient associations are mapped as component the association is searchable'() {
 
-        when: "save and index an instance which hasMany associations mapped as component"
+        when: "save and index an instance which hasMany associations mapped as innercomponent"
         new Player(name: "Ronaldo").save(flush: true)
         def toIndex = []
         toIndex << new Team(name: "Barcelona", strip: "White").save(flush: true)
         elasticSearchService.index(toIndex)
         elasticSearchAdminService.refresh()
 
-        then: "We can search using the transient collection component"
+        then: "We can search using the transient collection innercomponent"
         Team.search("Ronaldo").total == 1
 
-        and: "transients on search results using the component association use data stored on ElasticSearch"
+        and: "transients on search results using the innercomponent association use data stored on ElasticSearch"
         Team team = Team.search("Barcelona").searchResults.first()
         team.players.size() == 1
         team.players[0].name == "Ronaldo"
