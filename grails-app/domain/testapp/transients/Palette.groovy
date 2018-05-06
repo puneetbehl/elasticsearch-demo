@@ -31,7 +31,7 @@ enum Color {
     cyan, magenta, yellow, red, green, blue
 
     Color complementary() {
-        Color complementary = null
+        Color complementary
         switch (this) {
             case cyan: complementary = red
                 break
