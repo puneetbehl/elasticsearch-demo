@@ -5,6 +5,7 @@ import grails.testing.mixin.integration.Integration
 import spock.lang.Specification
 import spock.lang.Unroll
 import testapp.geopoint.Building
+import testapp.geopoint.GeoPoint
 import testapp.json.Product
 import testapp.mapping.migration.Catalog
 import testapp.multifield.Person
@@ -16,7 +17,7 @@ import testapp.transients.Palette
  * ['string', 'integer', 'long', 'float', 'double', 'boolean', 'null', 'date']
  */
 @Integration
-class ElasticsearchMappingFactorySpec extends Specification implements ElasticSearchMappingSpec {
+class ElasticsearchMappingFactorySpec extends Specification implements ElasticSearchSpec {
 
     void setup() {
         grailsApplication.config.elasticSearch.includeTransients = true
@@ -31,7 +32,7 @@ class ElasticsearchMappingFactorySpec extends Specification implements ElasticSe
     @Unroll('#clazz / #property is mapped as #expectedType')
     void "calculates the correct ElasticSearch types"() {
         given:
-        def scm = elasticSearchContextHolder.getMappingContextByType(clazz)
+        def scm = elasticsearchContextHolder.getMappingContextByType(clazz)
 
         when:
         Map mapping = ElasticSearchMappingFactory.getElasticMapping(scm)
@@ -59,5 +60,18 @@ class ElasticsearchMappingFactorySpec extends Specification implements ElasticSe
 
         Anagram  | 'length'          || 'integer'
         Anagram  | 'palindrome'      || 'boolean'
+    }
+
+    void 'a geo point is mapped correctly'() {
+        when:
+        GeoPoint location = new GeoPoint(lat: 53.00, lon: 10.00).save()
+        Building building = new Building(location: location).save(flush: true)
+
+        index(building)
+        refreshIndices()
+
+        then:
+        def mapping = getFieldMappingMetaData('test', 'building').sourceAsMap
+        mapping.(properties).location.type == 'geo_point'
     }
 }

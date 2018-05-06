@@ -3,21 +3,14 @@ package testapp
 import grails.core.GrailsApplication
 import grails.plugins.elasticsearch.*
 import grails.plugins.elasticsearch.mapping.DomainEntity
-import grails.plugins.elasticsearch.mapping.SearchableClassMappingConfigurator
 import grails.util.GrailsNameUtils
-import org.elasticsearch.action.admin.cluster.state.ClusterStateRequestBuilder
 import org.elasticsearch.action.search.SearchRequest
-import org.elasticsearch.client.AdminClient
-import org.elasticsearch.client.ClusterAdminClient
-import org.elasticsearch.cluster.ClusterState
-import org.elasticsearch.cluster.metadata.IndexMetaData
-import org.elasticsearch.cluster.metadata.MappingMetaData
 import org.elasticsearch.index.query.QueryBuilder
 import org.grails.datastore.gorm.GormEntity
 import org.hibernate.SessionFactory
 import org.springframework.beans.factory.annotation.Autowired
 
-trait ElasticSearchSpec {
+trait ElasticSearchSpec implements ElasticsearchAdminSpec, ElasticSearchMappingSpec{
 
     @Autowired
     GrailsApplication grailsApplication
@@ -29,13 +22,7 @@ trait ElasticSearchSpec {
     ElasticSearchService elasticSearchService
 
     @Autowired
-    ElasticSearchAdminService elasticSearchAdminService
-
-    @Autowired
     ElasticSearchHelper elasticSearchHelper
-
-    @Autowired
-    SearchableClassMappingConfigurator searchableClassMappingConfigurator
 
     @Autowired
     ElasticSearchBootStrapHelper elasticSearchBootStrapHelper
@@ -73,14 +60,6 @@ trait ElasticSearchSpec {
         sessionFactory.currentSession.flush()
     }
 
-    void refreshIndices() {
-        elasticSearchAdminService.refresh()
-    }
-
-    void refreshIndex(Collection<String> indices) {
-        elasticSearchAdminService.refresh(indices)
-    }
-
     void index(GroovyObject... instances) {
         elasticSearchService.index(instances as Collection<GroovyObject>)
     }
@@ -97,15 +76,6 @@ trait ElasticSearchSpec {
         elasticSearchService.unindex(domainClass)
     }
 
-    void refreshIndex(Class... searchableClasses) {
-        elasticSearchAdminService.refresh(searchableClasses)
-    }
-
-    void deleteIndices() {
-        elasticSearchAdminService.deleteIndex()
-        elasticSearchAdminService.refresh()
-    }
-
     String getIndexName(DomainEntity domainClass) {
         String name = grailsApplication.config.getProperty("elasticSearch.index.name", String) ?: domainClass.packageName
         if (!name) {
@@ -119,19 +89,11 @@ trait ElasticSearchSpec {
     }
 
     DomainEntity getDomainClass(Class<?> clazz) {
-        elasticSearchService.elasticSearchContextHolder.getMappingContextByType(clazz).domainClass
+        elasticsearchContextHolder.getMappingContextByType(clazz).domainClass
     }
 
-    MappingMetaData getFieldMappingMetaData(String indexName, String typeName) {
-        if (elasticSearchAdminService.aliasExists(indexName)) {
-            indexName = elasticSearchAdminService.indexPointedBy(indexName)
-        }
-        AdminClient admin = elasticSearchHelper.elasticSearchClient.admin()
-        ClusterAdminClient cluster = admin.cluster()
-        ClusterStateRequestBuilder indices = cluster.prepareState().setIndices(indexName)
-        ClusterState clusterState = indices.execute().actionGet().state
-        IndexMetaData indexMetaData = clusterState.metaData.index(indexName)
-        return indexMetaData.mapping(typeName)
+    ElasticSearchContextHolder getElasticsearchContextHolder() {
+        elasticSearchService.elasticSearchContextHolder
     }
 
 }
