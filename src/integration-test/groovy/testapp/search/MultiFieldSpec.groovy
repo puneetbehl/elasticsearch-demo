@@ -1,11 +1,20 @@
 package testapp.search
 
 import grails.plugins.elasticsearch.ElasticSearchResult
+import grails.testing.mixin.integration.Integration
+import grails.transaction.Rollback
 import spock.lang.Specification
 import testapp.ElasticSearchSpec
 import testapp.component.Spaceship
 import testapp.multifield.Person
 
+/**
+ * @author Puneet Behl
+ * @since 1.0
+ */
+
+@Integration
+@Rollback
 class MultiFieldSpec extends Specification implements ElasticSearchSpec {
 
     void 'Multi_filed creates untouched field'() {
