@@ -18,6 +18,10 @@ import testapp.json.Product
 @Rollback
 class PaginationSortingSpec extends Specification implements ElasticSearchSpec {
 
+    def cleanup() {
+        refreshIndices()
+    }
+
     void 'Paging and sorting through search results'() {
         given: 'a bunch of products'
         10.times {

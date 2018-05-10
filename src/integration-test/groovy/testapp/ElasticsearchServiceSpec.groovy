@@ -35,7 +35,9 @@ class ElasticsearchServiceSpec extends Specification implements ElasticSearchSpe
     ]
 
     /**
-     * This test class doesn't delete any ElasticSearch indices, because that would also delete the mapping.
+     * This test class doesn't delete any ElasticSearch indices,
+     * because that would also delete the mapping.
+     *
      * Be aware of this when indexing new objects.
      */
     def setup() {
@@ -56,12 +58,6 @@ class ElasticsearchServiceSpec extends Specification implements ElasticSearchSpe
             GeoPoint geoPoint = save new GeoPoint(lat: it.lat, lon: it.lon)
             save new Building(name: "${it.name}", location: geoPoint)
         }
-
-        /*
-        * TODO: Need to identify why test cases are not working after removing this.
-        * */
-//         elasticSearchService.index()
-//         refreshIndices()
     }
 
     void 'A search with Uppercase Characters should return appropriate results'() {
@@ -166,4 +162,16 @@ class ElasticsearchServiceSpec extends Specification implements ElasticSearchSpe
         sortResults == [2.5401]
     }
 
+    void 'a geo point is mapped correctly'() {
+        when:
+        GeoPoint location = new GeoPoint(lat: 53.00, lon: 10.00).save()
+        Building building = new Building(location: location).save(flush: true)
+
+        index(building)
+        refreshIndices()
+
+        then:
+        def mapping = getFieldMappingMetaData(elasticsearchContextHolder.getMappingContextByType(Building).indexName, 'building').sourceAsMap
+        mapping.(properties).location.type == 'geo_point'
+    }
 }
